@@ -1,0 +1,86 @@
+graph TD
+    subgraph Client
+        WebApp["Web Application"]
+        MobileApp["Mobile App"]
+    end
+
+    subgraph API_Gateway[API Gateway Layer]
+        Gateway["/api Gateway"]
+        Auth["Auth Service"]
+        RateLimit["Rate Limiter"]
+    end
+
+    subgraph Core_Services[Core Services]
+        UserSvc["User Service"]
+        OrderSvc["Order Service"]
+        PaymentSvc["Payment Service"]
+        NotifSvc["Notification Service"]
+        AnalyticsSvc["Analytics Service"]
+    end
+
+    subgraph Message_Queues[Message Brokers]
+        OrderQ["Order Queue"]
+        PaymentQ["Payment Queue"]
+        EmailQ["Email Queue"]
+        LogQ["Logging Queue"]
+    end
+
+    subgraph Databases
+        UserDB[(User DB)]
+        OrderDB[(Order DB)]
+        PaymentDB[(Payment DB)]
+        AnalyticsDB[(Analytics DB)]
+    end
+
+    subgraph External_Services[External Services]
+        PaymentGW["Payment Gateway"]
+        EmailSvc["Email Provider"]
+        SMSSvc["SMS Provider"]
+    end
+
+    %% Client to Gateway connections
+    WebApp -->|HTTPS| Gateway
+    MobileApp -->|HTTPS| Gateway
+
+    %% Gateway Layer connections
+    Gateway --> Auth
+    Gateway --> RateLimit
+    Gateway --> UserSvc
+    Gateway --> OrderSvc
+    Gateway --> PaymentSvc
+
+    %% Service to Database connections
+    UserSvc -->|Read/Write| UserDB
+    OrderSvc -->|Read/Write| OrderDB
+    PaymentSvc -->|Read/Write| PaymentDB
+    AnalyticsSvc -->|Write| AnalyticsDB
+
+    %% Service to Queue connections
+    OrderSvc -->|Publish| OrderQ
+    PaymentSvc -->|Publish| PaymentQ
+    NotifSvc -->|Publish| EmailQ
+    OrderSvc -->|Publish| LogQ
+    PaymentSvc -->|Publish| LogQ
+
+    %% Queue to Service connections
+    OrderQ -->|Subscribe| AnalyticsSvc
+    PaymentQ -->|Subscribe| NotifSvc
+    EmailQ -->|Subscribe| EmailSvc
+    LogQ -->|Subscribe| AnalyticsSvc
+
+    %% External service connections
+    PaymentSvc -->|API| PaymentGW
+    NotifSvc -->|API| EmailSvc
+    NotifSvc -->|API| SMSSvc
+
+    style Gateway fill:#f9f,stroke:#333,stroke-width:2px
+    style UserDB fill:#66b3ff,stroke:#333
+    style OrderDB fill:#66b3ff,stroke:#333
+    style PaymentDB fill:#66b3ff,stroke:#333
+    style AnalyticsDB fill:#66b3ff,stroke:#333
+    
+    style Message_Queues fill:#ffe6cc,stroke:#333,stroke-width:1px
+    style External_Services fill:#e6ffcc,stroke:#333,stroke-width:1px
+    style Core_Services fill:#ccf5ff,stroke:#333,stroke-width:1px
+    style API_Gateway fill:#ffccf5,stroke:#333,stroke-width:1px
+    style Client fill:#f2ccff,stroke:#333,stroke-width:1px
