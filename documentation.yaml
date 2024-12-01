@@ -1,215 +1,30 @@
 openapi: 3.0.0
 info:
-  title: API Specification
+  title: User API
   version: v1
 paths:
-  /books:
-    get:
-      summary: Retrieve a list of all books in the inventory.
-      description: Retrieve a list of all books in the inventory.
-  /books/{book_id}:
-    get:
-      summary: Retrieve a specific book by its ID.
-      description: Retrieve a specific book by its ID.
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
-          required: true
-  /books/add:
-    post:
-      summary: Add a new book to the inventory.
-      description: Add a new book to the inventory.
-  /notebooks:
-    get:
-      summary: Retrieve a list of notebooks, with optional pagination parameters.
-      description: Retrieve a list of notebooks, with optional pagination parameters.
-      parameters:
-        - in: query
-          name: page
-          schema:
-            type: integer
-        - in: query
-          name: size
-          schema:
-            type: integer
-      tags:
-        - notebooks
-      responses:
-        '200':
-          description: List of notebooks
-        '400':
-          description: Invalid request parameters
-    post:
-      summary: Create a new notebook.
-      description: Create a new notebook.
-      tags:
-        - notebooks
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                author:
-                  type: string
-      responses:
-        '201':
-          description: New notebook created
-  /notebooks/{book_id}:
-    get:
-      summary: Retrieve a notebook by ID.
-      description: Retrieve a notebook by ID.
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
-      tags:
-        - notebooks
-      responses:
-        '200':
-          description: Book details
-        '404':
-          description: Book not found
-    put:
-      summary: Update a notebook.
-      description: Update a notebook.
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
-      tags:
-        - notebooks
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                author:
-                  type: string
-      responses:
-        '200':
-          description: Book updated
-        '400':
-          description: Invalid request parameters
-    delete:
-      summary: Delete a notebook.
-      description: Delete a notebook.
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
-      tags:
-        - notebooks
-      responses:
-        '204':
-          description: Book deleted
   /users:
     get:
-      summary: Retrieve a list of all users in the system.
-      description: Retrieve a list of all users in the system.
-      tags:
-        - users
-    get:
-      summary: Retrieve a user by username.
-      description: Retrieve a user by username.
-      parameters:
-        - in: query
-          name: username
-          schema:
-            type: string
-      tags:
-        - users
+      summary: Retrieve a list of all users.
       responses:
         '200':
-          description: User details
-        '404':
-          description: User not found
+          description: A list of users.
   /users/{user_id}:
     get:
       summary: Retrieve a specific user by ID.
-      description: Retrieve a specific user by ID.
       parameters:
         - in: path
           name: user_id
           schema:
             type: integer
-      tags:
-        - users
+          required: true
       responses:
         '200':
-          description: User details
-        '404':
-          description: User not found
-    put:
-      summary: Update a user.
-      description: Update a user.
-      parameters:
-        - in: path
-          name: user_id
-          schema:
-            type: integer
-      tags:
-        - users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-      responses:
-        '200':
-          description: User updated
-        '400':
-          description: Invalid request parameters
-    delete:
-      summary: Delete a user.
-      description: Delete a user.
-      parameters:
-        - in: path
-          name: user_id
-          schema:
-            type: integer
-      tags:
-        - users
-      responses:
-        '204':
-          description: User deleted
+          description: A single user.
   /users/register:
     post:
-      summary: Create a new user in the system.
-      description: Create a new user in the system.
-      tags:
-        - users
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
-              required:
-                - username
-                - email
+      summary: Create a new user account.
       responses:
-        '200':
-          description: User details
+        '201':
+          description: User created successfully.
 
