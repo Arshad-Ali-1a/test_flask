@@ -1,173 +1,94 @@
 openapi: 3.0.0
 info:
-  title: API Specification
+  title: User API
   version: v1
 paths:
-  /:
-    get:
-      summary: Returns a welcome message for the home page.
-      tags:
-        - Home
-  /books:
-    get:
-      summary: Retrieve a list of all books in the inventory.
-      tags:
-        - books
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-        '400':
-          description: Invalid request.
-          content:
-            text/plain:
-              schema:
-                type: string
-        '500':
-          description: Internal server error.
-          content:
-            text/plain:
-              schema:
-                type: string
-  /books/{book_id}:
-    get:
-      summary: Retrieve a specific book by its ID.
-      tags:
-        - books
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
-          required: true
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-        '404':
-          description: Book not found.
-          content:
-            text/plain:
-              schema:
-                type: string
-  /books/add:
-    post:
-      summary: Add a new book to the inventory.
-      tags:
-        - books
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Book'
-      responses:
-        '201':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-        '400':
-          description: Invalid request.
-          content:
-            text/plain:
-              schema:
-                type: string
-  /notebooks:
-    get:
-      summary: Returns a list of notebooks with pagination support.
-      tags:
-        - Notebooks
-      parameters:
-        - in: query
-          name: page
-          schema:
-            type: integer
-    post:
-      summary: Creates a new notebook.
-      tags:
-        - Notebooks
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-  /notebooks/{book_id}:
-    get:
-      summary: Returns a notebook by its ID.
-      tags:
-        - Notebooks
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
   /users:
     get:
-      summary: Retrieve a list of all users in the database.
+      summary: Retrieve a list of all users.
       tags:
         - Users
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    username:
-                      type: string
-                    email:
-                      type: string
+        - List
     post:
-      summary: Creates a new user.
+      summary: Create a new user.
       tags:
         - Users
+        - Create
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: true
+          description: Username for the user.
+        - in: query
+          name: email
+          schema:
+            type: string
+          required: true
+          description: Email address for the user.
   /users/{user_id}:
     get:
-      summary: Retrieve a specific user by ID from the database.
+      summary: Retrieve a single user by ID.
       tags:
         - Users
+        - Get
       parameters:
         - in: path
           name: user_id
           schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  username:
-                    type: string
-                  email:
-                    type: string
+            type: integer
+          required: true
+          description: ID of the user.
+    put:
+      summary: Update a single user.
+      tags:
+        - Users
+        - Update
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+    delete:
+      summary: Delete a single user.
+      tags:
+        - Users
+        - Delete
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: ID of the user.
   /users/register:
     post:
-      summary: Register a new user with the provided details.
+      summary: Creates a new user and adds them to the database.
       tags:
         - Users
       requestBody:
@@ -177,15 +98,13 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
                 username:
                   type: string
                 email:
                   type: string
       responses:
         '201':
-          description: ''
+          description: User created successfully
           content:
             application/json:
               schema:
@@ -197,25 +116,32 @@ paths:
                     type: string
                   email:
                     type: string
-components:
-  schemas:
-    Book:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        author:
-          type: string
-        price:
-          type: number
-        stock:
-          type: integer
-      required:
-        - id
-        - title
-        - author
-        - price
-        - stock
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+      email:
+        type: string
+responses:
+  '200':
+    description: OK
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/User'
+  '404':
+    description: Not Found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
 
