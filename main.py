@@ -4,7 +4,7 @@ from users_blueprint import users_bp
 
 app = Flask(__name__)
 
-# Register blueprints
+# Register blueprints.
 app.register_blueprint(books_bp, url_prefix='/notebooks')
 app.register_blueprint(users_bp, url_prefix='/users')
 
