@@ -1,84 +1,93 @@
 openapi: 3.0.0
 info:
-  title: Books API
+  title: Bookstore API
   version: v1
 paths:
   /books:
     get:
-      summary: Retrieve a list of all available books.
+      summary: Retrieves a list of all available books.
       responses:
         '200':
           description: A list of books
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Book'
-        '404':
-          description: Books not found
-          content:
-            application/json:
-              schema:
                 type: object
                 properties:
-                  error:
-                    type: string
+                  books:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        author:
+                          type: string
+                        price:
+                          type: number
+                          format: float
+                        stock:
+                          type: integer
     post:
-      summary: Add a new book to the inventory.
+      summary: Create a new book in the store.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                book_data:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    author:
+                      type: string
+                    price:
+                      type: number
+                      format: float
+                    stock:
+                      type: integer
       responses:
         '201':
-          description: Book created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                author:
-                  type: string
+          description: Book created successfully
   /books/{book_id}:
     get:
-      summary: Retrieve a specific book by its ID.
+      summary: Retrieves a specific book by its ID.
       parameters:
         - in: path
           name: book_id
           schema:
             type: integer
           required: true
-          description: ID of the book to retrieve
       responses:
         '200':
-          description: A book
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-        '404':
-          description: Book not found
+          description: A single book
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
-                    type: string
-    put:
-      summary: Update a specific book.
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
-          required: true
-          description: ID of the book to update
+                  book:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      author:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                      stock:
+                        type: integer
+  /books/add:
+    post:
+      summary: Adds a new book to the inventory.
       requestBody:
         required: true
         content:
@@ -90,138 +99,103 @@ paths:
                   type: string
                 author:
                   type: string
+                price:
+                  type: number
+                  format: float
+                stock:
+                  type: integer
       responses:
-        '200':
-          description: Book updated
+        '201':
+          description: Book added successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/BookUpdated'
-    delete:
-      summary: Delete a specific book.
-      parameters:
-        - in: path
-          name: book_id
-          schema:
-            type: integer
-          required: true
-          description: ID of the book to delete
-      responses:
-        '200':
-          description: Book deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/BookDeleted'
+                type: object
+                properties:
+                  book:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      author:
+                        type: string
+                      price:
+                        type: number
+                        format: float
+                      stock:
+                        type: integer
   /users:
     get:
       summary: Retrieve a list of all users in the system.
       responses:
         '200':
           description: A list of users
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    username:
-                      type: string
-                    email:
-                      type: string
-    post:
-      summary: Create a new user in the system.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
-              required:
-                - username
-                - email
-      responses:
-        '201':
-          description: User created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  username:
-                    type: string
-                  email:
-                    type: string
-                  purchases:
-                    type: array
-                required:
-                  - id
-                  - username
-                  - email
   /users/{user_id}:
     get:
-      summary: Retrieve a specific user by ID.
+      summary: Retrieve a specific user by its ID.
       parameters:
         - in: path
           name: user_id
           schema:
             type: integer
           required: true
-          description: ID of the user to retrieve
       responses:
         '200':
-          description: A user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  username:
-                    type: string
-                  email:
-                    type: string
-                required:
-                  - id
-                  - username
-                  - email
-components:
-  schemas:
-    Book:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        author:
-          type: string
-        price:
-          type: number
-        stock:
-          type: integer
-      required:
-        - id
-        - title
-        - author
-        - price
-        - stock
-  responses:
-    BookCreated:
-      description: Book created
-    BookUpdated:
-      description: Book updated
-    BookDeleted:
-      description: Book deleted
+          description: A single user
+    put:
+      summary: Update a specific user in the system.
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+        - in: body
+          name: user_data
+          schema:
+            type: object
+          required: true
+      responses:
+        '200':
+          description: User updated successfully
+    delete:
+      summary: Delete a specific user from the system.
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        '204':
+          description: User deleted successfully
+  /users/register:
+    post:
+      summary: Create a new user account.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                username:
+                  type: string
+                email:
+                  type: string
+                purchases:
+                  type: array
+              required:
+                - id
+                - username
+                - email
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad Request
+
 
