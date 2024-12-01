@@ -1,93 +1,96 @@
 openapi: 3.0.0
 info:
-  title: Bookstore API
-  version: v1
+  title: Online Book Store API
+  version: 1.0.0
 paths:
   /books:
     get:
-      summary: Retrieves a list of all available books.
+      summary: Retrieve a list of all books
+      description: Retrieve a list of all books in the inventory.
       responses:
         '200':
           description: A list of books
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  books:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        title:
-                          type: string
-                        author:
-                          type: string
-                        price:
-                          type: number
-                          format: float
-                        stock:
-                          type: integer
-    post:
-      summary: Create a new book in the store.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                book_data:
+                type: array
+                items:
                   type: object
                   properties:
+                    id:
+                      type: integer
                     title:
                       type: string
                     author:
                       type: string
                     price:
                       type: number
-                      format: float
                     stock:
                       type: integer
+                  required:
+                    - id
+                    - title
+                    - author
+                    - price
+                    - stock
+    post:
+      summary: Create a new book
+      description: Create a new book and add it to the database.
+      parameters:
+        - name: title
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Title of the book
+        - name: author
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Author of the book
       responses:
         '201':
           description: Book created successfully
-  /books/{book_id}:
+  /books/{id}:
     get:
-      summary: Retrieves a specific book by its ID.
+      summary: Retrieve a specific book by ID
+      description: Retrieve a specific book by its ID.
       parameters:
-        - in: path
-          name: book_id
+        - name: id
+          in: path
           schema:
             type: integer
           required: true
+          description: Unique identifier of the book
       responses:
         '200':
-          description: A single book
+          description: A book
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  book:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      title:
-                        type: string
-                      author:
-                        type: string
-                      price:
-                        type: number
-                        format: float
-                      stock:
-                        type: integer
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  author:
+                    type: string
+                  price:
+                    type: number
+                  stock:
+                    type: integer
+                required:
+                  - id
+                  - title
+                  - author
+                  - price
+                  - stock
   /books/add:
     post:
-      summary: Adds a new book to the inventory.
+      summary: Add a new book to the inventory
+      description: Add a new book to the inventory.
       requestBody:
         required: true
         content:
@@ -95,15 +98,22 @@ paths:
             schema:
               type: object
               properties:
+                id:
+                  type: integer
                 title:
                   type: string
                 author:
                   type: string
                 price:
                   type: number
-                  format: float
                 stock:
                   type: integer
+              required:
+                - id
+                - title
+                - author
+                - price
+                - stock
       responses:
         '201':
           description: Book added successfully
@@ -112,90 +122,126 @@ paths:
               schema:
                 type: object
                 properties:
-                  book:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      title:
-                        type: string
-                      author:
-                        type: string
-                      price:
-                        type: number
-                        format: float
-                      stock:
-                        type: integer
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  author:
+                    type: string
+                  price:
+                    type: number
+                  stock:
+                    type: integer
+                required:
+                  - id
+                  - title
+                  - author
+                  - price
+                  - stock
   /users:
     get:
-      summary: Retrieve a list of all users in the system.
+      summary: Retrieve a list of all users
+      description: Retrieve a list of all users in the database.
+      tags:
+        - Users
       responses:
         '200':
           description: A list of users
-  /users/{user_id}:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    username:
+                      type: string
+                    email:
+                      type: string
+    post:
+      summary: Create a new user
+      description: Create a new user and add it to the database.
+      parameters:
+        - name: username
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Username of the user
+        - name: password
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Password of the user
+      responses:
+        '201':
+          description: User created successfully
+  /users/{id}:
     get:
-      summary: Retrieve a specific user by its ID.
+      summary: Retrieve a specific user by ID
+      description: Retrieve a specific user by its ID.
       parameters:
-        - in: path
-          name: user_id
+        - name: id
+          in: path
           schema:
             type: integer
           required: true
+          description: Unique identifier of the user
+      tags:
+        - Users
       responses:
         '200':
-          description: A single user
-    put:
-      summary: Update a specific user in the system.
-      parameters:
-        - in: path
-          name: user_id
-          schema:
-            type: integer
-          required: true
-        - in: body
-          name: user_data
-          schema:
-            type: object
-          required: true
+          description: A user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+  /:
+    get:
+      summary: Home page
+      description: Home page of the online book store.
       responses:
         '200':
-          description: User updated successfully
-    delete:
-      summary: Delete a specific user from the system.
-      parameters:
-        - in: path
-          name: user_id
-          schema:
-            type: integer
-          required: true
-      responses:
-        '204':
-          description: User deleted successfully
+          description: Home page content
   /users/register:
     post:
-      summary: Create a new user account.
+      summary: Create a new user account
+      description: Create a new user account.
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
                 username:
                   type: string
                 email:
                   type: string
-                purchases:
-                  type: array
-              required:
-                - id
-                - username
-                - email
       responses:
         '201':
           description: User registered successfully
-        '400':
-          description: Bad Request
-
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  purchases:
+                    type: array
 
